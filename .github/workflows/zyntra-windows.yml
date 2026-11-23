@@ -1,0 +1,108 @@
+name: ZyntraAcesso - instalador Windows de teste
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zyntraacesso-windows
+  cancel-in-progress: false
+
+jobs:
+  bridge:
+    uses: ./.github/workflows/zyntra-bridge.yml
+
+  windows:
+    needs: bridge
+    runs-on: windows-2022
+    timeout-minutes: 150
+    env:
+      FLUTTER_VERSION: '3.24.5'
+      VCPKG_ROOT: C:\vcpkg
+      VCPKG_DEFAULT_TRIPLET: x64-windows-static
+      VCPKG_DEFAULT_HOST_TRIPLET: x64-windows-static
+      CARGO_BUILD_JOBS: '2'
+      VCPKG_MAX_CONCURRENCY: '2'
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: bridge-artifact
+          path: ./
+      - uses: KyleMayes/install-llvm-action@ebc0426251bc40c7cd31162802432c68818ab8f0
+        with:
+          version: '15.0.6'
+      - uses: subosito/flutter-action@2783a3f08e1baf891508463f8c6653c258246225
+        id: flutter
+        with:
+          channel: stable
+          flutter-version: '3.24.5'
+          architecture: x64
+      - name: Preparar Flutter conforme a base fixada
+        shell: pwsh
+        run: |
+          flutter precache --windows
+          Invoke-WebRequest -Uri https://github.com/rustdesk/engine/releases/download/main/windows-x64-release.zip -OutFile "$env:RUNNER_TEMP\windows-x64-release.zip"
+          Expand-Archive -LiteralPath "$env:RUNNER_TEMP\windows-x64-release.zip" -DestinationPath "$env:RUNNER_TEMP\windows-engine"
+          $engineTarget = Join-Path '${{ steps.flutter.outputs.CACHE-PATH }}' 'bin\cache\artifacts\engine\windows-x64-release'
+          Copy-Item -Path "$env:RUNNER_TEMP\windows-engine\*" -Destination $engineTarget -Force -Recurse
+          Push-Location '${{ steps.flutter.outputs.CACHE-PATH }}'
+          git apply "$env:GITHUB_WORKSPACE\.github\patches\flutter_3.24.4_dropdown_menu_enableFilter.diff"
+          if ($LASTEXITCODE -ne 0) { throw 'Falha ao preparar o Flutter fixado.' }
+          Pop-Location
+      - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
+        with:
+          toolchain: '1.75'
+          targets: x86_64-pc-windows-msvc
+      - uses: lukka/run-vcpkg@b1a0dd252f06b9e25b3c022a9a03bd7a427fb6a2
+        with:
+          vcpkgDirectory: C:\vcpkg
+          vcpkgGitCommitId: 9e593bb18ea69cc5095e012465dcd675a822ed0d
+          doNotCache: true
+      - name: Preparar bibliotecas de vídeo e áudio
+        shell: bash
+        run: |
+          "$VCPKG_ROOT/vcpkg" install --triplet x64-windows-static --x-install-root="$VCPKG_ROOT/installed"
+      - name: Compilar o aplicativo nativo
+        shell: pwsh
+        run: |
+          python3 .\build.py --portable --flutter --skip-portable-pack --hwcodec --vram
+          if ($LASTEXITCODE -ne 0) { throw 'A compilação nativa falhou.' }
+          $payload = Join-Path $env:GITHUB_WORKSPACE 'zyntra-artifacts\payload'
+          New-Item -ItemType Directory -Path $payload -Force | Out-Null
+          Copy-Item -Path '.\flutter\build\windows\x64\runner\Release\*' -Destination $payload -Recurse
+          Rename-Item -LiteralPath "$payload\rustdesk.exe" -NewName ZyntraAcesso.exe
+          Copy-Item -LiteralPath LICENCE -Destination "$payload\LICENCE.txt"
+          Copy-Item -LiteralPath ZYNTRAACESSO.md -Destination "$payload\ZYNTRAACESSO.md"
+      - name: Conferir a interface
+        working-directory: flutter
+        shell: pwsh
+        run: |
+          flutter test test/zyntra_access_test.dart
+          if ($LASTEXITCODE -ne 0) { throw 'A interface não passou na conferência.' }
+      - name: Preparar o instalador de teste
+        shell: pwsh
+        run: |
+          Push-Location libs\portable
+          python3 -m pip install -r requirements.txt
+          python3 generate.py -f ../../zyntra-artifacts/payload -o . -e ../../zyntra-artifacts/payload/ZyntraAcesso.exe
+          if ($LASTEXITCODE -ne 0) { throw 'Não foi possível preparar o instalador.' }
+          Pop-Location
+          Copy-Item -LiteralPath '.\target\release\rustdesk-portable-packer.exe' -Destination '.\zyntra-artifacts\ZyntraAcesso-0.1.0-beta1-install.exe'
+          $installerHash = (Get-FileHash -LiteralPath '.\zyntra-artifacts\ZyntraAcesso-0.1.0-beta1-install.exe' -Algorithm SHA256).Hash
+          "$installerHash  ZyntraAcesso-0.1.0-beta1-install.exe" | Set-Content -LiteralPath '.\zyntra-artifacts\SHA256SUMS.txt'
+          git rev-parse HEAD | Set-Content -LiteralPath '.\zyntra-artifacts\SOURCE_COMMIT.txt'
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: ZyntraAcesso-Windows-beta1
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            zyntra-artifacts/ZyntraAcesso-0.1.0-beta1-install.exe
+            zyntra-artifacts/SHA256SUMS.txt
+            zyntra-artifacts/SOURCE_COMMIT.txt
