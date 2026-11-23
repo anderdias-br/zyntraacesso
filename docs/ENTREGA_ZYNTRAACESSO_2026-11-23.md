@@ -2,6 +2,8 @@
 
 Estado: **em desenvolvimento, sem distribuição**.
 
+Código separado em https://github.com/anderdias-br/zyntraacesso (privado durante o desenvolvimento), branch `codex/zyntraacesso`. Snapshot inicial `3d0bb24`; a origem e o submódulo permanecem identificados em `UPSTREAM.lock.json`. O branch local `codex/zyntraacesso-base` preserva o histórico raso upstream e a primeira adaptação; não foi necessário baixar todo o histórico para enviar o novo produto.
+
 ## Escopo e invariantes
 
 Pedido: aplicativo independente para amigos/empresas, mesma logo/cores do Zyntra, número de conexão, senha permanente opcional e acesso acompanhado com aviso explícito. Administração deve respeitar UAC/serviço autorizado; ligar remotamente depende do hardware/rede.
@@ -35,4 +37,4 @@ Antes de disponibilizar: compilar/testar Windows, servidor independente autoriza
 
 Um checkout em `C:\Projetos\zyntraacesso`, submódulo fixado sem cópia duplicada. Onze workflows originais preservados em `docs/upstream-workflows/`; não herdar cron/publicação de outros produtos. Nenhum servidor, navegador de prévia ou agente remoto foi iniciado. Nenhum programa do usuário encerrado. Não foram criados backups completos; Git preserva a origem e as mudanças. Retenção de binários será aplicada quando houver versões validadas.
 
-Disco C: antes do preparo **64,68 GiB**, após obtenção das fontes/ícones **64,65 GiB**; este trabalho acrescentou fontes necessárias, não executou nova limpeza nem liberou espaço. Conferir valor final ao encerrar.
+Disco C: antes do preparo **64,68 GiB**, após fontes/ícones e preparação do histórico Git **64,50 GiB**. Fontes rastreadas: aproximadamente **18,95 MiB**, além dos objetos Git/submódulo. Este trabalho acrescentou fontes necessárias, não executou nova limpeza nem liberou espaço. Nenhum processo temporário persistente iniciado.
