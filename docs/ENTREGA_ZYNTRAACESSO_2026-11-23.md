@@ -33,6 +33,14 @@ O computador atual não possui Rust/Cargo, Flutter/Dart, CMake/Ninja nem Docker 
 
 Antes de disponibilizar: compilar/testar Windows, servidor independente autorizado, assinatura, recuperação/atualização, teste de senha errada/recusa/UAC/reinício e reconexão; privacidade e fonte correspondente acessível aos destinatários. WOL permanece não homologado, sem promessa de ligar equipamento sem energia.
 
+### Estado confirmado ao encerrar este incremento
+
+- Código enviado ao repositório próprio; licença upstream sem modificações e `git diff --check` sem erros.
+- Conferência visual nativa e testes de widget **não executados**. Tentativas de disparo manual retornaram HTTP 404 de descoberta do workflow; a API listava zero workflows apesar de o arquivo existir na branch padrão. Não há execução nem resultado de teste neste repositório. Não confundir com o bloqueio de orçamento observado anteriormente no projeto iOS.
+- Sem build, instalador, serviço, configuração de senha ou sessão remota ZyntraAcesso em execução.
+- O proprietário esclareceu depois que provavelmente não possui VPS e pediu alternativa gratuita. Nenhum servidor fornecido/verificado e nenhuma contratação autorizada.
+- Candidata para piloto: Oracle Cloud Always Free, a avaliar na conta do proprietário. Existem cotas, disponibilidade de capacidade e possibilidade de recolhimento de instâncias ociosas; não prometer disponibilidade empresarial. Fontes consultadas em 23/11/2026: https://www.oracle.com/cloud/free/ e https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm. Não criar conta, inserir cartão ou converter para serviço pago automaticamente.
+
 ## Organização e reversão
 
 Um checkout em `C:\Projetos\zyntraacesso`, submódulo fixado sem cópia duplicada. Onze workflows originais preservados em `docs/upstream-workflows/`; não herdar cron/publicação de outros produtos. Nenhum servidor, navegador de prévia ou agente remoto foi iniciado. Nenhum programa do usuário encerrado. Não foram criados backups completos; Git preserva a origem e as mudanças. Retenção de binários será aplicada quando houver versões validadas.
