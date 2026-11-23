@@ -1,0 +1,17 @@
+ZYNTRAACESSO — PILOTO WINDOWS
+
+O mesmo instalador é usado nos dois notebooks. Esta versão é de teste.
+
+1. Instale no notebook de casa e no notebook da empresa.
+2. No notebook de casa, configure a opção "Acesso sem confirmação" e escolha uma senha permanente pelos controles de segurança do aplicativo.
+3. Após configurar o servidor de conexão nos dois computadores, informe no notebook da empresa o número mostrado no notebook de casa e conecte usando a senha escolhida.
+4. Mantenha o notebook de casa ligado e conectado à internet. Ligar equipamento desligado remotamente depende do hardware/rede e não está homologado neste piloto.
+5. Para usar programas como administrador, o Windows precisa autorizar a instalação/elevação. Nunca desative o UAC ou o antivírus para usar este aplicativo.
+
+O servidor próprio ainda depende da conclusão do cadastro/configuração da Oracle Cloud. A rede pública de demonstração do RustDesk não substitui essa etapa para usar o Codex e dados reais de trabalho.
+
+O instalador de teste ainda não tem certificado comercial de assinatura ZyntraAcesso. O Windows pode informar que o editor é desconhecido; isso não significa que houve assinatura ou homologação pela Microsoft.
+
+Código correspondente e licença: https://github.com/anderdias-br/zyntraacesso
+
+Não compartilhe a senha nem envie CPF, cartão, chaves ou documentos por comentários públicos no GitHub.
