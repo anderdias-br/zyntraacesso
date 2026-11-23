@@ -4,6 +4,8 @@ Aplicativo independente de acesso remoto para Windows, destinado inicialmente ao
 
 **Estado: desenvolvimento. Não há instalador ZyntraAcesso validado ou serviço público em operação.**
 
+Piloto atual: um operador, dois notebooks, para usar o Codex no computador de casa. O repositório foi tornado público por autorização do proprietário em 23/11/2026; o ERP continua privado. Acompanhar a geração do pacote e as pendências em [entrega do piloto](docs/ENTREGA_ZYNTRAACESSO_PILOTO_2026-11-23.md).
+
 ## Experiência solicitada
 
 - Número de conexão do computador e campo para conectar a outro número.

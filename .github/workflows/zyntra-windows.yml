@@ -48,10 +48,12 @@ jobs:
         run: |
           flutter precache --windows
           Invoke-WebRequest -Uri https://github.com/rustdesk/engine/releases/download/main/windows-x64-release.zip -OutFile "$env:RUNNER_TEMP\windows-x64-release.zip"
+          $engineHash = (Get-FileHash -LiteralPath "$env:RUNNER_TEMP\windows-x64-release.zip" -Algorithm SHA256).Hash
+          if ($engineHash -ne 'EC8CABF36EE4FF24C8D98DE25B00E70781EB03876265AEE84D0FE554A110036E') { throw 'O motor Flutter não corresponde à versão conferida.' }
           Expand-Archive -LiteralPath "$env:RUNNER_TEMP\windows-x64-release.zip" -DestinationPath "$env:RUNNER_TEMP\windows-engine"
-          $engineTarget = Join-Path '${{ steps.flutter.outputs.CACHE-PATH }}' 'bin\cache\artifacts\engine\windows-x64-release'
+          $engineTarget = Join-Path '${{ steps.flutter.outputs['CACHE-PATH'] }}' 'bin\cache\artifacts\engine\windows-x64-release'
           Copy-Item -Path "$env:RUNNER_TEMP\windows-engine\*" -Destination $engineTarget -Force -Recurse
-          Push-Location '${{ steps.flutter.outputs.CACHE-PATH }}'
+          Push-Location '${{ steps.flutter.outputs['CACHE-PATH'] }}'
           git apply "$env:GITHUB_WORKSPACE\.github\patches\flutter_3.24.4_dropdown_menu_enableFilter.diff"
           if ($LASTEXITCODE -ne 0) { throw 'Falha ao preparar o Flutter fixado.' }
           Pop-Location
