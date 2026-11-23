@@ -1,0 +1,26 @@
+{
+  "product": "ZyntraAcesso",
+  "stage": "development-not-distributed",
+  "client": {
+    "repository": "https://github.com/rustdesk/rustdesk",
+    "tag": "1.5.3",
+    "commit": "95cca3f661f635b3cc85c04935fe8d96d8f432ef",
+    "license": "AGPL-3.0"
+  },
+  "common": {
+    "repository": "https://github.com/rustdesk/hbb_common",
+    "commit": "fae47e024dd83cef6aaecde0aa7d11731df11649"
+  },
+  "server": {
+    "repository": "https://github.com/rustdesk/rustdesk-server",
+    "candidateTag": "1.1.16",
+    "deployed": false
+  },
+  "identity": {
+    "name": "ZyntraAcesso",
+    "erpIntegration": false,
+    "faceRecognitionRequired": false,
+    "unattendedAccess": "explicit-per-machine-opt-in-with-password",
+    "administratorAccess": "native-windows-consent-or-installed-service"
+  }
+}
