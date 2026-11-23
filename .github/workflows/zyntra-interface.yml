@@ -2,6 +2,9 @@ name: ZyntraAcesso - conferir interface
 
 on:
   workflow_dispatch:
+  push:
+    branches: ['codex/zyntraacesso']
+    paths: ['.github/workflows/zyntra-interface.yml']
 
 permissions:
   contents: read
